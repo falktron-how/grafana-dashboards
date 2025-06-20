@@ -1,2 +1,32 @@
 apiVersion: 1
-groups: []
+
+groups:
+  - name: falktron-alerts
+    folder: Falktron
+    orgId: 1
+    interval: 30s
+    rules:
+      - uid: high-cpu
+        title: High CPU Usage
+        condition: B
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: prometheus
+            model:
+              expr: avg(rate(node_cpu_seconds_total{mode!="idle"}[1m])) by (instance)
+              interval: ""
+              intervalMs: 10000
+              maxDataPoints: 43200
+          - refId: B
+            type: reduce
+            params: ["last"]
+            datasourceUid: prometheus
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage above 80%"
+        for: 1m
+        labels:
+          severity: critical
