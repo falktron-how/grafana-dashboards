@@ -1,0 +1,50 @@
+{
+  "name": "High CPU Usage Alert",
+  "folderUID": "",
+  "annotations": {
+    "summary": "High CPU usage detected on {{ $labels.instance }}"
+  },
+  "labels": {
+    "severity": "warning"
+  },
+  "condition": "C",
+  "data": [
+    {
+      "refId": "A",
+      "relativeTimeRange": {
+        "from": 300,
+        "to": 0
+      },
+      "datasourceUid": "prometheus",
+      "model": {
+        "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[2m])) * 100)",
+        "interval": "",
+        "legendFormat": "{{instance}}",
+        "refId": "A"
+      }
+    },
+    {
+      "refId": "B",
+      "type": "reduce",
+      "expression": "A",
+      "reducer": "last",
+      "settings": {
+        "mode": "replaceNN"
+      }
+    },
+    {
+      "refId": "C",
+      "type": "threshold",
+      "expression": "B",
+      "threshold": 80,
+      "comparator": ">",
+      "settings": {
+        "mode": "replaceNN"
+      }
+    }
+  ],
+  "noDataState": "NoData",
+  "execErrState": "Error",
+  "for": "2m",
+  "isPaused": false
+}
