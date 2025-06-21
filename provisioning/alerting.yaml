@@ -2,4 +2,4 @@ apiVersion: 1
 
 alerting:
   enable_alerting: true
-  alert_rules_path: /etc/grafana/provisioning/alerting
+  alert_rules_path: /opt/grafana/alerting
